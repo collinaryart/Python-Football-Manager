@@ -66,4 +66,4 @@ Additionally, it maintains a leaderboard to track player awards based on their p
 
 # Acknowledgements
 
-Provided by the Monash Faculty of IT team were the scripts of generic ADT definitions, decorators, binary search, merge sort and the testcases.
+This manager was coded as a Monash University assignment. Provided by the Monash Faculty of IT team were the scripts of generic ADT definitions, decorators, binary search, merge sort and the testcases.
