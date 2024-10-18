@@ -5,6 +5,7 @@ __since__ = '22/08/2024'
 
 from data_structures.referential_array import ArrayR
 from typing import Generic, Union, TypeVar
+from constants import PlayerStats
 
 K = TypeVar('K')
 V = TypeVar('V')
@@ -22,23 +23,34 @@ class HashyPerfectionTable(Generic[K, V]):
 
     Unless stated otherwise, all methods have O(1) complexity.
     """
+
     def __init__(self) -> None:
         """
         Initialise the Hash Table.
         Note: Our default table size 13, if you increase it to 19, you will not get full marks for approach.
+
+        Complexity:
+            Best Case Complexity: O(1)
+            Worst Case Complexity: O(1)
         """
         self.array: ArrayR[Union[tuple[K, V], None]] = ArrayR(13)
         self.count: int = 0
+
+    # Create a mapping from key to index, with a class variable
+    _key_to_index = {stat.value: idx for idx, stat in enumerate(PlayerStats)}
 
     def hash(self, key: K) -> int:
         """
         Hash a key for insert/retrieve/update into the hashtable.
 
         Complexity:
-        Best Case Complexity:
-        Worst Case Complexity:
+            Best Case Complexity: O(1)
+            Worst Case Complexity: O(1)
         """
-        raise NotImplementedError
+        try:
+            return self._key_to_index[key]
+        except KeyError:
+            raise KeyError(f"Invalid key: {key}")
 
     def __len__(self) -> int:
         """
@@ -50,7 +62,7 @@ class HashyPerfectionTable(Generic[K, V]):
         """
         Returns all keys in the hash table.
 
-        :complexity: O(N) where N is self.table_size.
+        :complexity: O(M), where M is the size of the array.
         """
         res = ArrayR(len(self.array))
         i = 0
@@ -64,7 +76,7 @@ class HashyPerfectionTable(Generic[K, V]):
         """
         Returns all values in the hash table.
 
-        :complexity: O(N) where N is self.table_size.
+        :complexity: O(M), where M is the size of the array.
         """
         res = ArrayR(len(self.array))
         i = 0
@@ -94,8 +106,8 @@ class HashyPerfectionTable(Generic[K, V]):
         Get the value at a certain key
 
         Complexity:
-        Best Case Complexity: O(hash)
-        Worst Case Complexity: O(hash)
+            Best Case Complexity: O(1)
+            Worst Case Complexity: O(1)
 
         Raises:
         KeyError: When the key doesn't exist.
@@ -110,8 +122,8 @@ class HashyPerfectionTable(Generic[K, V]):
         Set an (key, value) pair in our hash table.
 
         Complexity:
-        Best Case Complexity: O(hash)
-        Worst Case Complexity: O(hash)
+            Best Case Complexity: O(1)
+            Worst Case Complexity: O(1)
 
         Raises:
         KeyError: When the key doesn't exist.
@@ -128,8 +140,8 @@ class HashyPerfectionTable(Generic[K, V]):
         Deletes a (key, value) pair in our hash table.
 
         Complexity:
-        Best Case Complexity: O(hash)
-        Worst Case Complexity: O(hash)
+            Best Case Complexity: O(1)
+            Worst Case Complexity: O(1)
 
         Raises:
         KeyError: When the key doesn't exist.
@@ -147,8 +159,8 @@ class HashyPerfectionTable(Generic[K, V]):
     def __str__(self) -> str:
         """
         Complexity:
-        Best Case Complexity: O(N) where N is the length of the array.
-        Worst Case Complexity: O(N * (str(key) + str(value))) where N is the length of the array.
+            Best Case Complexity: O(M), where M is the size of the array.
+            Worst Case Complexity: O(M)
         """
         result: str = ""
         for item in self.array:

@@ -45,8 +45,9 @@ class HashyStepTable(Generic[K, V]):
         if sizes is not None:
             self.TABLE_SIZES = sizes
         self.size_index = 0
-        self.array: ArrayR[Union[tuple[K, V], None]] = ArrayR(self.TABLE_SIZES[self.size_index])
+        self.array: ArrayR[Union[tuple[K, V], str, None]] = ArrayR(self.TABLE_SIZES[self.size_index])
         self.count = 0
+        self.deleted = "<DELETED>"  # Initialise the deleted marker
 
     def hash(self, key: K) -> int:
         """
@@ -72,7 +73,11 @@ class HashyStepTable(Generic[K, V]):
         Best Case Complexity:
         Worst Case Complexity:
         """
-        raise NotImplementedError
+        value = 0
+        for char in str(key):
+            value = (value * self.HASH_BASE + ord(char)) % (self.table_size - 1)
+        step_size = value + 1  # Ensure step size is not zero
+        return step_size
 
     @property
     def table_size(self) -> int:
@@ -93,14 +98,29 @@ class HashyStepTable(Generic[K, V]):
         FullError: When a table is full and cannot be inserted.
 
         Complexity:
-        Best Case Complexity:
-        Worst Case Complexity:
+            Best Case Complexity: O(1), when the desired position is found immediately.
+            Worst Case Complexity: O(N), where N is the table size.
         """
         # Initial position
         position = self.hash(key)
 
         # Custom logic to be implemented here
-        raise NotImplementedError
+        step = self.hash2(key)
+
+        for _ in range(self.table_size):
+            item = self.array[position]
+            if item is None:
+                if is_insert:
+                    return position
+                else:
+                    raise KeyError(f"{key} not found")
+            elif item == self.deleted:
+                if is_insert:
+                    return position
+            elif item[0] == key:
+                return position
+            position = (position + step) % self.table_size
+        raise FullError("Hash table is full")
     
     def keys(self) -> list[K]:
         """
@@ -172,10 +192,12 @@ class HashyStepTable(Generic[K, V]):
         Deletes a (key, value) using lazy deletion
 
         Complexity:
-        Best Case Complexity:
-        Worst Case Complexity:
+            Best Case Complexity: O(1), when the key is found immediately.
+            Worst Case Complexity: O(N), where N is the table size.
         """
-        raise NotImplementedError
+        position = self._hashy_probe(key, False)
+        self.array[position] = self.deleted
+        self.count -= 1
 
     def is_empty(self) -> bool:
         return self.count == 0
@@ -188,16 +210,24 @@ class HashyStepTable(Generic[K, V]):
         Need to resize table and reinsert all values
 
         Complexity:
-        Best Case Complexity:
-        Worst Case Complexity:
+        Best Case Complexity: O(N), where N is the table size.
+        Worst Case Complexity: O(N)
         """
-        raise NotImplementedError
+        old_array = self.array
+        self.size_index += 1
+        if self.size_index >= len(self.TABLE_SIZES):
+            raise FullError("Maximum table size reached")
+        self.array = ArrayR(self.TABLE_SIZES[self.size_index])
+        self.count = 0
+        for item in old_array:
+            if item is not None and item != self.deleted:
+                self[item[0]] = item[1]
 
     def __str__(self) -> str:
         """
         Returns all they key/value pairs in our hash table (no particular
         order).
-        :complexity: O(N * (str(key) + str(value))) where N is the table size
+        :complexity: O(N), where N is the table size.
         """
         result = ""
         for item in self.array:

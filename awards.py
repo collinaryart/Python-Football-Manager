@@ -13,8 +13,14 @@ class Awards:
             season (season): The season we are generating the awards for.
             player_stat (PlayerStat): The player stat to order the awards by (in descending order)
             num_top_players (int): The number of players from each team to track.
+
+        Complexity:
+            Best Case Complexity: O(1)
+            Worst Case Complexity: O(1)
         """
-        raise NotImplementedError
+        self.season = season
+        self.player_stat = player_stat
+        self.num_top_players = num_top_players
 
     def get_leaderboard(self) -> ArrayR[ArrayR[int | str]]:
         """
@@ -36,10 +42,27 @@ class Awards:
                     - Height (int)
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity: O(T * P^2), where T is the number of teams, P is the number of players per team.
+            Worst Case Complexity: O(T * P^2)
         """
-        raise NotImplementedError
+        leaderboard = []
+
+        teams = self.season.get_teams()
+        for team in teams:
+            top_players = team.get_top_x_players(self.player_stat, self.num_top_players)
+            for stat_value, player_name, player in top_players:
+                player_stats_array = ArrayR(10)
+                player_stats_array[0] = player.get_name()
+                player_stats_array[1] = player[PlayerStats.GAMES_PLAYED]
+                player_stats_array[2] = player[PlayerStats.GOALS]
+                player_stats_array[3] = player[PlayerStats.ASSISTS]
+                player_stats_array[4] = player[PlayerStats.TACKLES]
+                player_stats_array[5] = player[PlayerStats.INTERCEPTIONS]
+                player_stats_array[6] = player[PlayerStats.STAR_SKILL]
+                player_stats_array[7] = player[PlayerStats.WEAK_FOOT_ABILITY]
+                player_stats_array[8] = player[PlayerStats.WEIGHT]
+                player_stats_array[9] = player[PlayerStats.HEIGHT]
+                leaderboard.append(player_stats_array)
 
     def __str__(self) -> str:
         """
@@ -54,7 +77,7 @@ class Awards:
         Complexity:
             Analysis not required.
         """
-        raise NotImplementedError
+        return f"Awards for stat {self.player_stat.value} with top {self.num_top_players} players per team."
 
     def __repr__(self) -> str:
         """Returns a string representation of the Awards object.

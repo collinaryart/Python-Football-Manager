@@ -1,6 +1,6 @@
 from __future__ import annotations
 from constants import PlayerPosition, PlayerStats
-
+from data_structures.hash_table import LinearProbeTable
 
 class Player:
 
@@ -17,11 +17,18 @@ class Player:
             None
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity: O(N) where N is the number of PlayerStats
+            Worst Case Complexity: O(N)
 
         """
-        raise NotImplementedError
+        self.name: str = name
+        self.position: PlayerPosition = position
+        self.age: int = age
+
+        # Initialise statistics
+        self.statistics: LinearProbeTable[str, int] = LinearProbeTable()
+        for stat in PlayerStats:
+            self.statistics[stat.value] = 0
 
     def reset_stats(self) -> None:
         """
@@ -31,11 +38,12 @@ class Player:
             None
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity: O(N), where N is the number of PlayerStats.
+            Worst Case Complexity: O(N)
 
         """
-        raise NotImplementedError
+        for stat in PlayerStats:
+            self.statistics[stat.value] = 0
 
     def get_name(self) -> str:
         """
@@ -45,10 +53,10 @@ class Player:
             str: The name of the player
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity: O(1)
+            Worst Case Complexity: O(1)
         """
-        raise NotImplementedError
+        return self.name
 
     def get_position(self) -> PlayerPosition:
         """
@@ -58,10 +66,10 @@ class Player:
             PlayerPosition: The position of the player
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity: O(1)
+            Worst Case Complexity: O(1)
         """
-        raise NotImplementedError
+        return self.position
 
     def get_statistics(self):
         """
@@ -71,10 +79,10 @@ class Player:
             statistics: The players' statistics
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity: O(1)
+            Worst Case Complexity: O(1)
         """
-        raise NotImplementedError
+        return self.statistics
 
     def __setitem__(self, statistic: PlayerStats, value: int) -> None:
         """
@@ -88,10 +96,10 @@ class Player:
             None
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity: O(1)
+            Worst Case Complexity: O(1)
         """
-        raise NotImplementedError
+        self.statistics[statistic.value] = value
 
     def __getitem__(self, statistic: PlayerStats) -> int:
         """
@@ -104,10 +112,10 @@ class Player:
             int: The value of the stat
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity: O(1)
+            Worst Case Complexity: O(1)
         """
-        raise NotImplementedError
+        return self.statistics[statistic.value]
 
     def __str__(self) -> str:
         """
@@ -122,7 +130,7 @@ class Player:
         Complexity:
             Analysis not required.
         """
-        return ""
+        return f"Player(name={self.name}, position={self.position}, age={self.age}, stats={self.statistics})"
 
     def __repr__(self) -> str:
         """Returns a string representation of the Player object.
