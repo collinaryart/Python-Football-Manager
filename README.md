@@ -1,4 +1,5 @@
 # GUIDE
+Note: This programme is non-playable, and is not a game.
 
 # Player Stats
 
