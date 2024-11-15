@@ -1,5 +1,5 @@
 # GUIDE
-Note: This programme is non-playable, and is not a game.
+Football Manager simulates matches and seasons for a football league— managing teams & players, as well as dynamically scheduling their games.
 
 # Player Stats
 
